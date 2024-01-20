@@ -31,6 +31,11 @@ class AuthController extends Controller
         $cridentials = $request->only('email', 'password');
 
         $token = Auth::attempt($cridentials);
+        // $token = Auth::guard('api')->attempt($cridentials);
+        // $token = auth()->attempt([
+        //     'email' => $request->email,
+        //     'password' => $request->password,
+        // ]);
         if(!$token){
             return response()->json([
                 'status'=>'error',
@@ -82,5 +87,10 @@ class AuthController extends Controller
             ]
         ]);
 
+    }
+
+    public function userDetails()
+    {
+        return response()->json(auth()->user());
     }
 }

@@ -15,6 +15,7 @@ class AuthController extends Controller
         $this->middleware('auth:api', ['except' => ['login','register']]);
     }
 
+    /* Login API */
     public function login(Request $request)
     {
         $validator = Validator::make($request->all(),
@@ -31,11 +32,7 @@ class AuthController extends Controller
         $cridentials = $request->only('email', 'password');
 
         $token = Auth::attempt($cridentials);
-        // $token = Auth::guard('api')->attempt($cridentials);
-        // $token = auth()->attempt([
-        //     'email' => $request->email,
-        //     'password' => $request->password,
-        // ]);
+        
         if(!$token){
             return response()->json([
                 'status'=>'error',
@@ -54,6 +51,7 @@ class AuthController extends Controller
         ]);
     }
 
+    /* Register API */
     public function register(Request $request)
     {
         $validator = Validator::make($request->all(),
@@ -74,7 +72,7 @@ class AuthController extends Controller
             'password' => Hash::make($request->password)
         ]);
 
-        // $token = Auth::login($user);
+// $token = Auth::login($user);
         $token = $user->createToken('authToken')->plainTextToken;
 
         return response()->json([
@@ -89,6 +87,7 @@ class AuthController extends Controller
 
     }
 
+    /*User Detail API */
     public function userDetails()
     {
         return response()->json(auth()->user());

@@ -57,29 +57,40 @@ const Login = () =>{
             }
         }
     }
-    return(
-        <div className="container mt-4">
-            <div className="row justify-content-center">
-                <div className="col-md-6">
+    const imagePath = process.env.PUBLIC_URL + '/images/bg-image.webp';
 
-                    <form method="POST" onSubmit={handleSubmit}>
-                        <h3>Login Form</h3>
-                        <div>
-                            <label htmlFor="email" className="form-label">Email</label>
-                            <input type="text" name="email" placeholder="Enter Email" className="form-control" onChange={handleChange} />
-                            {validationErrors.email && <span className="text-danger">{validationErrors.email[0]}</span>}
+    return(
+        <section className="vh-100 bg-image"  style={{ backgroundImage: `url('${imagePath}')` }}>
+            <div className="mask d-flex align-items-center h-100 gradient-custom-3">
+                <div className="container h-100">
+                    <div className="row d-flex justify-content-center align-items-center h-100">
+                        <div className="col-12 col-md-9 col-lg-7 col-xl-6">
+                            <div className="card" style={{borderRadius: '15px'}}>
+                                <div className="card-body p-5">
+                                    <h2 className="text-uppercase text-center mb-5">Login</h2>
+                                    <form method="POST" onSubmit={handleSubmit}>
+                                        <div className="form-outline mb-4">
+                                            <input type="text" name="email" placeholder="Enter Email" className="form-control" onChange={handleChange} />
+                                            {validationErrors.email && <span className="text-danger">{validationErrors.email[0]}</span>}
+                                        </div>
+                                        <div className="form-outline mb-4">
+                                            <input type="password" name="password" placeholder="Enter Password" className="form-control" onChange={handleChange} />
+                                            {validationErrors.password && <span className="text-danger">{validationErrors.password[0]}</span>}
+                                        </div>
+                                        <button type="submit" className="btn btn-primary mt-4">Submit</button>
+                                    </form>
+                                    
+                                    <p className="text-center text-muted mt-5 mb-0">Not an account? <a href="/register"
+                                        className="fw-bold text-body"><u>Register here</u></a></p>
+                                </div>
+                            </div>
                         </div>
-                        <div>
-                            <label htmlFor="password" className="form-label">Password</label>
-                            <input type="text" name="password" placeholder="Enter Password" className="form-control" onChange={handleChange} />
-                            {validationErrors.password && <span className="text-danger">{validationErrors.password[0]}</span>}
-                        </div>
-                        <button type="submit" className="btn btn-primary mt-4">Submit</button>
-                    </form>
-                    <div className="mt-4"><span>Not a Member? </span><a href="/register">Create a New User</a></div>
+                    </div>
                 </div>
+
             </div>
-        </div>
+
+        </section> 
         
     )
 }

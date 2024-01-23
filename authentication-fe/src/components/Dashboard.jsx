@@ -11,9 +11,9 @@ const Dashboard = () => {
         const fetchUserDetails = async () => {
             try{
                 const token = localStorage.getItem("token");
-                
+
                 if(!token){
-                    navigate('/');
+                    navigate('/login');
                     return ;
                 }
     

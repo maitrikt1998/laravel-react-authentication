@@ -8,6 +8,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 use PHPOpenSourceSaver\JWTAuth\Contracts\JWTSubject;
+use Illuminate\Support\Str;
 
 class User extends Authenticatable implements JWTSubject
 {
@@ -22,6 +23,9 @@ class User extends Authenticatable implements JWTSubject
         'name',
         'email',
         'password',
+        'email_verified_at',
+        'email_verification_token',
+        'email_verified'
     ];
 
     /**
@@ -55,5 +59,20 @@ class User extends Authenticatable implements JWTSubject
             'email'=>$this->email,
             'name'=>$this->name
         ];
+    }
+
+    public function emailverification(){
+        $email = $this->email;
+        $token = Str::random(40);
+        $user = User::where('email',$email)->first();
+
+        $user->update(['email_verification_token' => $token]);
+        $link = env('Front_url').'email-verification?token='.$token;
+        \Mail::send([],[],function($message) use($email, $link){
+            $message->to($email)
+                    ->subject("Verify Your Email Address")
+                    ->html("<p>Verify Your Email</p><br/><a href='".$link."'>Verify Email Address</a>");
+        });
+        return $link;
     }
 }

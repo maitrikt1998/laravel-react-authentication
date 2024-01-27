@@ -82,9 +82,9 @@ const Register = () => {
                                             <input type="Password" name="password" placeholder="Enter Password" className="form-control form-control-lg" onChange={handleChange}/>
                                             {validationErrors.password && <span className="text-danger">{validationErrors.password[0]}</span>}
                                         </div>
-                                        <div class="d-flex justify-content-center">
+                                        <div className="d-flex justify-content-center">
                                         <button type="submit"
-                                            class="btn btn-success btn-block btn-lg gradient-custom-4 text-body">Register</button>
+                                            className="btn btn-success btn-block btn-lg gradient-custom-4 text-body">Register</button>
                                         </div>
                                         
                                     </form>

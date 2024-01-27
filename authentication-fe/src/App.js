@@ -4,6 +4,7 @@ import Register from './components/Register';
 import Login from './components/Login';
 import Dashboard from './components/Dashboard';
 import Index from './components/Index';
+import EmailVerification from './components/EmailVerification';
 
 function App() {
   return (
@@ -13,6 +14,7 @@ function App() {
           <Route path='/register' element={<Register />} />
           <Route path='/login' element={<Login />} />
           <Route path='/dashboard' element={<Dashboard />} />
+          <Route path="/email-verification" element={<EmailVerification />} />
         </Routes>
     </div>
   );

@@ -12,7 +12,7 @@ class AuthController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('auth:api', ['except' => ['login','register']]);
+        $this->middleware('auth:api', ['except' => ['login','register','emailverify','verifyEmail']]);
     }
 
     /* Login API */
@@ -72,12 +72,14 @@ class AuthController extends Controller
             'password' => Hash::make($request->password)
         ]);
 
+        $this->emailverify($user->email);
+
 // $token = Auth::login($user);
         $token = $user->createToken('authToken')->plainTextToken;
 
         return response()->json([
             'status' => 'success',
-            'message'=>'User Registered Successfully',
+            'message'=>'User Registered Successfully Verify Your Email Address',
             'user'=>$user,
             'authorisation'=> [
                 'token' => $token,
@@ -91,5 +93,43 @@ class AuthController extends Controller
     public function userDetails()
     {
         return response()->json(auth()->user());
+    }
+
+    /* send email Verification Link */
+    public function emailverify($email)
+    {
+        // $email = $request['email'];
+        $user = User::where('email', $email)->first();
+        if($user){
+            $user->emailverification();
+            return response()->json(['status'=>'success','message'=>'Verify Your Email Address']);
+        }else{
+            return response()->json(['status'=>'error','message'=>'User Not Found']);
+        }
+    }
+
+    /* confirm email Verification Status */
+    public function verifyEmail(Request $request)
+    {
+        $token = $request->input('token');
+
+        $user = User::where('email_verification_token', $token)->first();
+        if ($user) {
+            
+            if ($user->email_verified_at === null) {
+                
+                $user->update([
+                    'email_verified_at' => now(),
+                    'email_verification_token' => null,
+                    'email_verified' => 1,
+                ]);
+
+                return response()->json(['status' => 'success', 'message' => 'Email verified successfully']);
+            } else {
+                return response()->json(['status' => 'error', 'message' => 'Email already verified']);
+            }
+        } else {
+            return response()->json(['status' => 'error', 'message' => 'Invalid token']);
+        }
     }
 }

@@ -22,4 +22,6 @@ Route::controller(AuthController::class)->group(function(){
     Route::get('usetdetail','userDetails');
     Route::post('emailverify','emailverify');
     Route::post('verify-email', 'verifyEmail');
+    Route::post('forgotpassword','forgotpassword');
+    Route::post('changepassword','changepassword');
 });

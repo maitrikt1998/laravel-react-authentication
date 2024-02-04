@@ -1,10 +1,12 @@
 import React, { useState } from "react";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
+import {useAuth} from './AuthContext';
 
 const Login = () =>{
     const navigate = useNavigate();
+    const { login } = useAuth();
     const [ formData, setFormData] = useState({
         email: "",
         password: ""
@@ -23,7 +25,7 @@ const Login = () =>{
        
         try {
             const response = await axios.post("http://127.0.0.1:8000/api/login", formData);
-
+            login(response.data.user);
             const token = response.data.authorisation.token;
 
             localStorage.setItem("token", token);
@@ -33,7 +35,7 @@ const Login = () =>{
                 title: "Login Successful",
                 text: "Welcome back!",
             }).then(() => {
-                navigate("/dashboard");
+                navigate("/home");
             });
         } catch (error) {
             if (error.response && error.response.status === 401) {
@@ -76,6 +78,9 @@ const Login = () =>{
                                         <div className="form-outline mb-4">
                                             <input type="password" name="password" placeholder="Enter Password" className="form-control" onChange={handleChange} />
                                             {validationErrors.password && <span className="text-danger">{validationErrors.password[0]}</span>}
+                                        </div>
+                                        <div className="d-flex justify-content-end">
+                                            <Link to="/forgotpassword">Forgot Password?</Link>
                                         </div>
                                         <button type="submit" className="btn btn-primary mt-4">Submit</button>
                                     </form>

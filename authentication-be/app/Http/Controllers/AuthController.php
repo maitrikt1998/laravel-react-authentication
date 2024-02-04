@@ -7,12 +7,14 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use App\Models\User;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Str;
+use Mail;
 
 class AuthController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('auth:api', ['except' => ['login','register','emailverify','verifyEmail']]);
+        $this->middleware('auth:api', ['except' => ['login','register','emailverify','verifyEmail','forgotpassword','changepassword']]);
     }
 
     /* Login API */
@@ -132,4 +134,45 @@ class AuthController extends Controller
             return response()->json(['status' => 'error', 'message' => 'Invalid token']);
         }
     }
+
+    /*Forgot Password */
+    public function forgotpassword(Request $request)
+    {
+        $email = $request->email;
+        $user = User::where('email', $email)->first();
+        if($user){
+            $password = Str::random(10);
+            Mail::send([],[],function($message) use($email, $password){
+                $message->to($email)
+                        ->subject("Reset Password")
+                        ->html("<p>Tour New Password is</p><br/>".$password);
+            });
+            User::where('email', $email)->update(['password'=>Hash::make($password)]);
+            return response()->json(['status'=>'success','message'=>'New Password send in your email']);
+        }else{
+            return response()->json(['status'=>'error','message'=>'User Not Found']);
+        }
+    }
+
+    /* Change Password */
+    public function changepassword(Request $request)
+    {
+        $userId = $request->userId;
+        $currentPassword =  $request->cpassword;
+        $newpassword = $request->npassword;
+
+        $user = User::find($userId);
+        if($user){
+            if(Hash::check($currentPassword, $user->password)){
+                User::where('id', $userId)->update(['password'=>Hash::make($newpassword)]);
+              
+                return response()->json(['status'=>'success','message'=>'Password Change Successfully']);
+            }else{
+                return response()->json(['status'=>'error','message'=>'Current Password Not Match']);
+            }
+        }else{
+            return response()->json(['status'=>'error','message'=>'User Not Found']);
+        }
+    }
+
 }
